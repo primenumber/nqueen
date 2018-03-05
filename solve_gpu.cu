@@ -32,17 +32,9 @@ struct Node {
   uint32_t pos;
 };
 
-
-struct Solver {
-  int N;
-  int stack_index;
-  uint64_t count;
-  __device__ Solver(const int N)
-    : N(N), stack_index(0), count(0) {}
-  __device__ void solve(const int depth, const uint32_t left, const uint32_t mid, const uint32_t right);
-};
-
-__device__ void Solver::solve(const int depth, const uint32_t left, const uint32_t mid, const uint32_t right) {
+__device__ uint64_t solve_nonrec(const int N, const int depth, const uint32_t left, const uint32_t mid, const uint32_t right) {
+  int stack_index = 0;
+  uint64_t count = 0;
   __shared__ Node stack[64][32];
   stack[threadIdx.x][0] = {depth, left, mid, right, (((uint32_t)1 << N) - 1) & ~(left | mid | right)};
   while (true) {
@@ -51,7 +43,7 @@ __device__ void Solver::solve(const int depth, const uint32_t left, const uint32
     }
     uint32_t pos = stack[threadIdx.x][stack_index].pos;
     if (pos == 0) {
-      if (stack_index == 0) return; // end solve
+      if (stack_index == 0) return count; // end solve
       --stack_index;
     } else {
       uint32_t bit = pos & -pos;
@@ -77,9 +69,7 @@ __global__ void kernel_ver2(const int N, const int depth,
     const size_t size) {
   int index = threadIdx.x + blockIdx.x * blockDim.x;
   if (index < size) {
-    Solver solver(N);
-    solver.solve(depth, left_ary[index], mid_ary[index], right_ary[index]);
-    result_ary[index] = solver.count;
+    result_ary[index] = solve_nonrec(N, depth, left_ary[index], mid_ary[index], right_ary[index]);
   }
 }
 
