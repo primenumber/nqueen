@@ -61,7 +61,10 @@ __device__ void Solver::solve(const int depth, const uint32_t left, const uint32
       uint32_t new_mid = stack[threadIdx.x][stack_index].mid | bit;
       uint32_t new_right = (stack[threadIdx.x][stack_index].right | bit) >> 1;
       ++stack_index;
-      stack[threadIdx.x][stack_index] = {new_depth, new_left, new_mid, new_right, (((uint32_t)1 << N) - 1) & ~(new_left | new_mid | new_right)};
+      stack[threadIdx.x][stack_index] = {
+        new_depth, new_left, new_mid, new_right,
+        (((uint32_t)1 << N) - 1) & ~(new_left | new_mid | new_right)
+      };
     }
   }
 }
