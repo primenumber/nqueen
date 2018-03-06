@@ -168,16 +168,16 @@ int main(int argc, char **argv) {
   const int N = atoi(argv[1]);
   const int M = atoi(argv[2]);
   boost::timer::cpu_timer timer;
-  std::cout << solve(N) << std::endl;
+  std::cout << "CPU(naive): " << solve(N) << std::endl;
   std::cout << timer.format() << std::endl;
   timer.start();
-  std::cout << solve_parallel(N, M) << std::endl;
+  std::cout << "CPU(parallel): " << solve_parallel(N, M) << std::endl;
   std::cout << timer.format() << std::endl;
   timer.start();
-  std::cout << solve_gpu(N, M) << std::endl;
+  std::cout << "GPU(parallel): " << solve_gpu(N, M) << std::endl;
   std::cout << timer.format() << std::endl;
   timer.start();
-  std::cout << solve_gpu_ver2(N, M) << std::endl;
+  std::cout << "GPU(optimized): " << solve_gpu_ver2(N, M) << std::endl;
   std::cout << timer.format() << std::endl;
   return 0;
 }
