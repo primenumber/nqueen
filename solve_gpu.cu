@@ -132,6 +132,10 @@ uint64_t solve_gpu(const int N, const int M) {
   cudaMemcpy(result.data(), result_d, sizeof(uint64_t) * length, cudaMemcpyDeviceToHost);
   uint64_t sum = 0;
   for (size_t i = 0; i < length; ++i) sum += result[i];
+  cudaFree(left_ary_d);
+  cudaFree(mid_ary_d);
+  cudaFree(right_ary_d);
+  cudaFree(result_d);
   return sum;
 }
 
@@ -157,6 +161,10 @@ uint64_t solve_gpu_ver2(const int N, const int M) {
   cudaMemcpy(result.data(), result_d, sizeof(uint64_t) * length, cudaMemcpyDeviceToHost);
   uint64_t sum = 0;
   for (size_t i = 0; i < length; ++i) sum += result[i];
+  cudaFree(left_ary_d);
+  cudaFree(mid_ary_d);
+  cudaFree(right_ary_d);
+  cudaFree(result_d);
   return sum;
 }
 
