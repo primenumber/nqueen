@@ -13,7 +13,7 @@ $ make
 
 `$ ./solve N M`
 
-`N` is problem size, `M` is expand depth (smaller than `N').
+`N` is problem size, `M` is expand depth (smaller than `N`).
 
 ```
 $ ./solve 10 5
