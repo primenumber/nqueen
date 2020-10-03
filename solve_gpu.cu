@@ -4,6 +4,8 @@
 #include <thread>
 #include <boost/timer/timer.hpp>
 
+constexpr int threadsPerBlock = 64;
+
 __host__ __device__ uint64_t solve(const int N, const int depth = 0, const uint32_t left = 0, const uint32_t mid = 0, const uint32_t right = 0) {
   if (depth == N) return 1;
   uint64_t sum = 0;
@@ -35,7 +37,7 @@ struct Node {
 __device__ uint64_t solve_nonrec(const int N, const int depth, const uint32_t left, const uint32_t mid, const uint32_t right) {
   int stack_index = 0;
   uint64_t count = 0;
-  __shared__ Node stack[64][32];
+  __shared__ Node stack[threadsPerBlock][16];
   stack[threadIdx.x][0] = {depth, left, mid, right, (((uint32_t)1 << N) - 1) & ~(left | mid | right)};
   while (true) {
     if (stack[threadIdx.x][stack_index].depth == N) {
@@ -154,7 +156,6 @@ uint64_t solve_gpu_ver2(const int N, const int M) {
   cudaMemcpy(left_ary_d, nqe.left_ary.data(), sizeof(uint32_t) * length, cudaMemcpyHostToDevice);
   cudaMemcpy(mid_ary_d, nqe.mid_ary.data(), sizeof(uint32_t) * length, cudaMemcpyHostToDevice);
   cudaMemcpy(right_ary_d, nqe.right_ary.data(), sizeof(uint32_t) * length, cudaMemcpyHostToDevice);
-  constexpr int threadsPerBlock = 64;
   const int blockCount = (length + threadsPerBlock - 1) / threadsPerBlock;
   kernel_ver2<<<blockCount, threadsPerBlock>>>(N, M, left_ary_d, mid_ary_d, right_ary_d, result_d, length);
   std::vector<uint64_t> result(length);
