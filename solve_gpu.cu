@@ -293,7 +293,7 @@ uint64_t solve_gpu_ver3(const int N, const int M) {
 
 int main(int argc, char **argv) {
   if (argc < 4) {
-    std::cerr << "usage: " << argv[0] << "SOLVER N M" << std::endl;
+    std::cerr << "usage: " << argv[0] << " SOLVER N M" << std::endl;
     std::cerr << "SOLVER: CPU_NAIVE | CPU_PARALLEL | GPU_PARALLEL | GPU_OPTIMIZED" << std::endl;
     return 1;
   }
