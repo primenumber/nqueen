@@ -58,7 +58,8 @@ __global__ void kernel(const int N, const int depth,
   const uint32_t mask_N = ((uint32_t)1 << N) - 1;
   uint64_t count = 0;
   int right_shift = 64 - N;
-  uint64_t left = left_ary[index], mid = mid_ary[index], right = static_cast<uint64_t>(right_ary[index]) << right_shift;
+  uint64_t left = left_ary[index], right = static_cast<uint64_t>(right_ary[index]) << right_shift;
+  uint32_t mid = mid_ary[index];
   stack_modified[0][threadIdx.x] = 0;
   stack_pos[0][threadIdx.x] = mask_N & ~(left | mid | (right >> right_shift));
   while (true) {
