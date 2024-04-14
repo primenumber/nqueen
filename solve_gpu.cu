@@ -1,8 +1,9 @@
 #include <atomic>
+#include <chrono>
 #include <iostream>
-#include <vector>
+#include <sstream>
 #include <thread>
-#include <boost/timer/timer.hpp>
+#include <vector>
 
 // common
 __host__ __device__ uint64_t solve(const int N, const int depth = 0, const uint32_t left = 0, const uint32_t mid = 0, const uint32_t right = 0) {
@@ -292,6 +293,15 @@ uint64_t solve_gpu_ver3(const int N, const int M) {
   return sum;
 }
 
+template <typename T>
+std::string format_elapsed(const T& tp) {
+  using namespace std::literals;
+  const auto end = T::clock::now();
+  std::stringstream ss;
+  ss << (end - tp) / 1ms << "ms";
+  return ss.str();
+}
+
 int main(int argc, char **argv) {
   if (argc < 4) {
     std::cerr << "usage: " << argv[0] << " SOLVER N M" << std::endl;
@@ -301,22 +311,22 @@ int main(int argc, char **argv) {
   std::string solver = argv[1];
   const int N = atoi(argv[2]);
   const int M = atoi(argv[3]);
-  boost::timer::cpu_timer timer;
+  const auto start = std::chrono::high_resolution_clock::now();
   if (solver == "CPU_NAIVE") {
     std::cout << "CPU(naive): " << solve(N) << std::endl;
-    std::cout << timer.format() << std::endl;
+    std::cout << format_elapsed(start) << std::endl;
   } else if (solver == "CPU_PARALLEL") {
     std::cout << "CPU(parallel): " << solve_parallel(N, M) << std::endl;
-    std::cout << timer.format() << std::endl;
+    std::cout << format_elapsed(start) << std::endl;
   } else if (solver == "GPU_PARALLEL") {
     std::cout << "GPU(parallel): " << solve_gpu(N, M) << std::endl;
-    std::cout << timer.format() << std::endl;
+    std::cout << format_elapsed(start) << std::endl;
   } else if (solver == "GPU_OPTIMIZED") {
     std::cout << "GPU(optimized): " << solve_gpu_ver2(N, M) << std::endl;
-    std::cout << timer.format() << std::endl;
+    std::cout << format_elapsed(start) << std::endl;
   } else if (solver == "GPU_TESTING") {
     std::cout << "GPU(testing): " << solve_gpu_ver3(N, M) << std::endl;
-    std::cout << timer.format() << std::endl;
+    std::cout << format_elapsed(start) << std::endl;
   } else {
     std::cerr << "Unknown solver: " << solver << std::endl;
     return EXIT_FAILURE;
