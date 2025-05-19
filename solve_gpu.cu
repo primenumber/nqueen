@@ -16,6 +16,15 @@ __host__ __device__ uint64_t solve(const int N, const int depth = 0, const uint3
   return sum;
 }
 
+template <typename T>
+std::string format_elapsed(const T& tp) {
+  using namespace std::literals;
+  const auto end = T::clock::now();
+  std::stringstream ss;
+  ss << (end - tp) / 1ms << "ms";
+  return ss.str();
+}
+
 // GPU recursive version
 namespace gpu_ver1 {
 
@@ -291,15 +300,6 @@ uint64_t solve_gpu_ver3(const int N, const int M) {
   cudaFree(right_ary_d);
   cudaFree(result_d);
   return sum;
-}
-
-template <typename T>
-std::string format_elapsed(const T& tp) {
-  using namespace std::literals;
-  const auto end = T::clock::now();
-  std::stringstream ss;
-  ss << (end - tp) / 1ms << "ms";
-  return ss.str();
 }
 
 int main(int argc, char **argv) {
